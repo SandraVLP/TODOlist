@@ -14,7 +14,7 @@ export type TaskType = {
 export const Todolist = ({title, tasks}: PropsType) => {
 const tasksList = tasks.map((task: TaskType) => {
     return (
-        <li>
+        <li key={task.id}>
         <input type="checkbox" checked={task.isDone} /> <span>{task.title}</span>
       </li>
     )
@@ -27,9 +27,15 @@ const tasksList = tasks.map((task: TaskType) => {
         <input />
         <button>+</button>
       </div>
-      <ul>
-      {tasksList}
-      </ul>
+{tasks.length === 0 ? (
+    <p>No tasks</p>
+) : (
+
+    <ul>
+    {tasksList}
+    </ul>
+)}
+
       <div>
         <button>All</button>
         <button>Active</button>
