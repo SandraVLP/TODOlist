@@ -4,6 +4,7 @@ import { Button } from './Button'
 type PropsType = {
     title: string
     tasks: TaskType[]
+    removeTask: (taskId: number) => void
 }
 
 export type TaskType = {
@@ -12,11 +13,12 @@ export type TaskType = {
     isDone: boolean
 }
  
-export const Todolist = ({title, tasks}: PropsType) => {
+export const Todolist = ({title, tasks, removeTask}: PropsType) => {
 const tasksList = tasks.map((task: TaskType) => {
     return (
         <li key={task.id}>
         <input type="checkbox" checked={task.isDone} /> <span>{task.title}</span>
+        <button onClick={() => removeTask(task.id)}>x</button>
       </li>
     )
 })
