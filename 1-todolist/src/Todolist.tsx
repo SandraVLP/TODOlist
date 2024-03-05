@@ -18,7 +18,8 @@ const tasksList = tasks.map((task: TaskType) => {
     return (
         <li key={task.id}>
         <input type="checkbox" checked={task.isDone} /> <span>{task.title}</span>
-        <button onClick={() => removeTask(task.id)}>x</button>
+        <Button title="x" onClick={() => removeTask(task.id)} />
+
       </li>
     )
 })
