@@ -2,40 +2,66 @@ import React from "react";
 import { useState } from "react";
 import "./App.css";
 import { Todolist } from "./Todolist";
-import { TaskType } from "./Todolist";
 
-export type FilterValuesType = 'all' | 'active' | 'completed'
+import { v1 } from "uuid";
+
+export type FilterValuesType = "all" | "active" | "completed";
+
+export type TaskType = {
+  id: string;
+  title: string;
+  isDone: boolean;
+};
 
 function App() {
   const [tasks, setTasks] = useState<TaskType[]>([
-    { id: 1, title: "HTML&CSS", isDone: true },
-    { id: 2, title: "JS", isDone: true },
-    { id: 3, title: "ReactJS", isDone: false },
-    { id: 4, title: "Redux", isDone: false },
+    { id: v1(), title: "HTML&CSS", isDone: true },
+    { id: v1(), title: "JS", isDone: true },
+    { id: v1(), title: "ReactJS", isDone: false },
+    { id: v1(), title: "Redux", isDone: false },
   ]);
 
-  const removeTask = (taskId: number) => {
+  const removeTask = (taskId: string) => {
     const filteredTasks = tasks.filter((task) => {
       return task.id !== taskId;
     });
     setTasks(filteredTasks);
   };
 
-  const [filter, setFilter] = useState<FilterValuesType>('all')
-const changeFilter = (filter: FilterValuesType) => {setFilter(filter)}
-
-  let tasksForTodolist = tasks
-  if (filter === 'active') {
-    tasksForTodolist = tasks.filter(task => !task.isDone)
+  const addTask = (title: string) => {
+    const newTask: TaskType = {
+      id: v1(),
+      title: title,
+      isDone: false,
+    }
+    const updatedTasks = [newTask, ...tasks]
+    setTasks(updatedTasks)
   }
-   
-  if (filter === 'completed') {
-    tasksForTodolist = tasks.filter(task => task.isDone)
+  
+
+  const [filter, setFilter] = useState<FilterValuesType>("all");
+  const changeFilter = (filter: FilterValuesType) => {
+    setFilter(filter);
+  };
+
+  let tasksForTodolist = tasks;
+  if (filter === "active") {
+    tasksForTodolist = tasks.filter((task) => !task.isDone);
+  }
+
+  if (filter === "completed") {
+    tasksForTodolist = tasks.filter((task) => task.isDone);
   }
 
   return (
     <div className="App">
-      <Todolist title="What to learn" tasks={tasksForTodolist} removeTask={removeTask} changeFilter={changeFilter}/>
+      <Todolist
+        title="What to learn"
+        tasks={tasksForTodolist}
+        removeTask={removeTask}
+        changeFilter={changeFilter}
+        addTask={addTask}
+      />
     </div>
   );
 }
