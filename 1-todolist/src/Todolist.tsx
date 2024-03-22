@@ -34,7 +34,7 @@ export const Todolist = ({
       changeTaskStatus(task.id, newStatusValue);
     };
     return (
-      <li key={task.id}>
+      <li key={task.id} className={task.isDone ? 'is-done' : ''}>
         <input
           type="checkbox"
           checked={task.isDone}
