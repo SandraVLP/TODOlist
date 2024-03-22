@@ -13,6 +13,7 @@ type PropsType = {
   changeFilter: (filter: FilterValuesType) => void;
   addTask: (title: string) => void;
   changeTaskStatus: (taskId: string, taskStatus: boolean) => void;
+  filter: string;
 };
 
 export const Todolist = ({
@@ -22,6 +23,7 @@ export const Todolist = ({
   changeFilter,
   addTask,
   changeTaskStatus,
+  filter
 }: PropsType) => {
   const [taskTitle, setTaskTitle] = useState("");
   const [error, setError] = useState<string | null>(null);
@@ -89,12 +91,12 @@ export const Todolist = ({
       </div>
       {tasks.length === 0 ? <p>No tasks</p> : <ul>{tasksList}</ul>}
       <div>
-        <Button title={"All"} onClick={() => changeFilterTasksHandler("all")} />
-        <Button
+        <Button className={filter === 'all' ? 'active-filter' : ''} title={"All"} onClick={() => changeFilterTasksHandler("all")} />
+        <Button className={filter === 'active' ? 'active-filter' : ''}
           title={"Active"}
           onClick={() => changeFilterTasksHandler("active")}
         />
-        <Button
+        <Button className={filter === 'completed' ? 'active-filter' : ''}
           title={"Completed"}
           onClick={() => changeFilterTasksHandler("completed")}
         />
