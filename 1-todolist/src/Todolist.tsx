@@ -4,6 +4,7 @@ import { FilterValuesType } from "./App";
 import { TaskType } from "./App";
 import { useState } from "react";
 import { KeyboardEvent } from "react";
+import { ChangeEvent } from "react";
 
 type PropsType = {
   title: string;
@@ -11,6 +12,7 @@ type PropsType = {
   removeTask: (taskId: string) => void;
   changeFilter: (filter: FilterValuesType) => void;
   addTask: (title: string) => void;
+  changeTaskStatus:(taskId: string, taskStatus: boolean) => void;
 };
 
 export const Todolist = ({
@@ -19,12 +21,19 @@ export const Todolist = ({
   removeTask,
   changeFilter,
   addTask,
+  changeTaskStatus
 }: PropsType) => {
   const [taskTitle, setTaskTitle] = useState("");
+
+
   const tasksList = tasks.map((task: TaskType) => {
+    const changeTaskStatusHandler = (e: ChangeEvent<HTMLInputElement>) => {
+      const newStatusValue = e.currentTarget.checked
+      changeTaskStatus(task.id, newStatusValue)
+    }
     return (
       <li key={task.id}>
-        <input type="checkbox" checked={task.isDone} />{" "}
+        <input type="checkbox" checked={task.isDone}  onChange={changeTaskStatusHandler}/>{" "}
         <span>{task.title}</span>
         <Button title="x" onClick={() => removeTask(task.id)} />
       </li>
@@ -32,8 +41,9 @@ export const Todolist = ({
   });
 
   const addTaskHandler = () => {
-    addTask(taskTitle);
-            setTaskTitle("");
+    if  (taskTitle.trim() !== '') {
+    addTask(taskTitle.trim());
+            setTaskTitle("");}
   }
 
   const changeTaskTitleHandler = (event: any) => {
@@ -49,6 +59,8 @@ export const Todolist = ({
   const changeFilterTasksHandler = (filter: FilterValuesType) => {
     changeFilter(filter)
   }
+
+
 
   return (
     <div>

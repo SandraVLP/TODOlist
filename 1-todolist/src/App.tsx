@@ -21,6 +21,11 @@ function App() {
     { id: v1(), title: "Redux", isDone: false },
   ]);
 
+  const changeTaskStatus = (taskId: string, taskStatus: boolean) => {
+    const updatedState = tasks.map(t => t.id === taskId ? {...t, isDone: taskStatus} : t)
+    setTasks(updatedState)
+  }
+
   const removeTask = (taskId: string) => {
     const filteredTasks = tasks.filter((task) => {
       return task.id !== taskId;
@@ -61,6 +66,7 @@ function App() {
         removeTask={removeTask}
         changeFilter={changeFilter}
         addTask={addTask}
+        changeTaskStatus={changeTaskStatus}
       />
     </div>
   );
