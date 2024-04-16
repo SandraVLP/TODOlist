@@ -1,7 +1,9 @@
 import React from 'react'
 import { KeyboardEvent } from "react";
-import { Button } from './Button';
+// import { Button } from './Button';
 import { useState } from 'react';
+import Button from '@mui/material/Button';
+import { TextField } from '@mui/material';
 
 type Props = {
     addItem: ( title: string) => void
@@ -36,18 +38,28 @@ const AddItemForm = ({addItem}: Props) => {
   };
   return (
     <div>
-        <input
+        {/* <input
         className={error ? 'error' : ''}
           value={taskTitle}
           onChange={changeTaskTitleHandler}
           onKeyUp={addTaskOnKeyUpHandler}
-        />
+        /> */}
+        <TextField
+  label="Enter a title"
+  variant={'outlined'}
+  className={error ? 'error' : ''}
+  value={taskTitle}
+  size={'small'}
+  onChange={changeTaskTitleHandler}
+  onKeyUp={addTaskOnKeyUpHandler}
+  error={!!error}
+/>
         <Button
-          title="+"
+          variant="contained"
           onClick={() => {
             addTaskHandler();
           }}
-        />
+        > + </Button>
         {error && <div className={'error-message'}>{error}</div>}
       </div>)
 }
