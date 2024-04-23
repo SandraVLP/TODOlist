@@ -7,7 +7,12 @@ import AddItemForm from "./AddItemForm";
 import { EditableSpan } from "./EditableSpan";
 import IconButton from "@mui/material/IconButton";
 import DeleteIcon from "@mui/icons-material/Delete";
-import Checkbox from '@mui/material/Checkbox';
+import Checkbox from "@mui/material/Checkbox";
+import List from "@mui/material/List";
+import ListItem from "@mui/material/ListItem";
+import Box from "@mui/material/Box";
+import { filterButtonsContainerSx } from './Todolist.styles';
+import { getListItemSx } from "./Todolist.styles";
 
 type PropsType = {
   todoID: string;
@@ -63,25 +68,26 @@ export const Todolist = ({
     // }
 
     return (
-      <li key={task.id} className={task.isDone ? "is-done" : ""}>
+      <ListItem
+        disableGutters
+        disablePadding
+        key={task.id}
+        sx={getListItemSx(task.isDone)}
+      >
+        <div>
         <Checkbox checked={task.isDone} onChange={changeTaskStatusHandler} />
-        {/* <input
-          type="checkbox"
-          checked={task.isDone}
-          onChange={changeTaskStatusHandler}
-        />{" "} */}
         <EditableSpan
           oldTitle={task.title}
           updateTitle={(newTitle: string) => {
             updateTaskTitleHandler(task.id, newTitle);
           }}
         />
-        {/* <span>{task.title}</span> */}
+        </div>
+
         <IconButton onClick={() => removeTask(todoID, task.id)}>
           <DeleteIcon />
         </IconButton>
-        {/* <Button title="x" onClick={() => removeTask(todoID,task.id)} /> */}
-      </li>
+      </ListItem>
     );
   });
 
@@ -107,19 +113,15 @@ export const Todolist = ({
 
   return (
     <div>
-      {/* <h3>{title}</h3> */}
-      <IconButton onClick={removeListHandler}>
-        <DeleteIcon />
-      </IconButton>
       <h3>
-        {" "}
         <EditableSpan
           oldTitle={title}
           updateTitle={updateTodolistTitleHandler}
         />
+        <IconButton onClick={removeListHandler}>
+          <DeleteIcon />
+        </IconButton>
       </h3>
-
-      {/* <Button title="x" onClick={removeListHandler}/> */}
       <AddItemForm addItem={addTaskHandler} />
       {/* <div>
         <input
@@ -128,16 +130,10 @@ export const Todolist = ({
           onChange={changeTaskTitleHandler}
           onKeyUp={addTaskOnKeyUpHandler}
         />
-        <Button
-          title="+"
-          onClick={() => {
-            addTaskHandler();
-          }}
-        />
         {error && <div className={'error-message'}>{error}</div>}
       </div> */}
-      {tasks.length === 0 ? <p>No tasks</p> : <ul>{tasksList}</ul>}
-      <div>
+      {tasks.length === 0 ? <p>No tasks</p> : <List>{tasksList}</List>}
+      <Box sx={filterButtonsContainerSx}>
         <Button
           variant={filter === "all" ? "outlined" : "text"}
           color={"inherit"}
@@ -164,7 +160,7 @@ export const Todolist = ({
         >
           Completed
         </Button>
-      </div>
+      </Box>
     </div>
   );
 };
