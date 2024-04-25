@@ -6,7 +6,6 @@ import { v1 } from "uuid";
 import AddItemForm from "./AddItemForm";
 import AppBar from "@mui/material/AppBar";
 import Toolbar from "@mui/material/Toolbar";
-import Button from "@mui/material/Button";
 import IconButton from "@mui/material/IconButton";
 import MenuIcon from "@mui/icons-material/Menu";
 import Grid2 from "@mui/material/Unstable_Grid2/Grid2";
@@ -33,6 +32,11 @@ export type TodolistType = {
   filter: FilterValuesType;
 };
 
+export type TasksStateType = {
+  [key: string]: Array<TaskType>
+
+}
+
 function App() {
   const [themeMode, setThemeMode] = useState<ThemeMode>('light')
   const theme = createTheme({
@@ -51,7 +55,7 @@ function App() {
     { id: todolistID2, title: "What to buy", filter: "all" },
   ]);
 
-  let [tasks, setTasks] = useState({
+  let [tasks, setTasks] = useState<TasksStateType>({
     [todolistID1]: [
       { id: v1(), title: "HTML&CSS", isDone: true },
       { id: v1(), title: "JS", isDone: true },
@@ -69,7 +73,7 @@ function App() {
   //   { id: v1(), title: "Redux", isDone: false },
   // ]);
   const changeModeHandler = () => {
-    setThemeMode(themeMode == 'light' ? 'dark' : 'light')
+    setThemeMode(themeMode === 'light' ? 'dark' : 'light')
   }
 
   const changeTaskStatus = (

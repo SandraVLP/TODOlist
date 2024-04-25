@@ -15,12 +15,12 @@ test('correct todolist should be removed', () => {
   ]
  
   // 2. Действие
-  const action = {
-    type: 'REMOVE-TODOLIST',
-    payload:{ 
-      id: todolistId1,
-    },
-  } as const
+  // const action = {
+  //   type: 'REMOVE-TODOLIST',
+  //   payload:{ 
+  //     id: todolistId1,
+  //   },
+  // } as const
   const endState = todolistsReducer(startState, removeTodolistAC(todolistId1))
  
   // 3. Проверяем, что наши действия (изменения state) соответствуют ожиданию

@@ -53,14 +53,14 @@ export const Todolist = ({
       const newStatusValue = e.currentTarget.checked;
       changeTaskStatus(todoID, task.id, newStatusValue);
     };
-    let tasksForTodolist = tasks;
-    if (filter === "active") {
-      tasksForTodolist = tasks.filter((task) => !task.isDone);
-    }
+    // let tasksForTodolist = tasks;
+    // if (filter === "active") {
+    //   tasksForTodolist = tasks.filter((task) => !task.isDone);
+    // }
 
-    if (filter === "completed") {
-      tasksForTodolist = tasks.filter((task) => task.isDone);
-    }
+    // if (filter === "completed") {
+    //   tasksForTodolist = tasks.filter((task) => task.isDone);
+    // }
 
     // const updateTaskTitleHandler = (newTitle:string) => {
     //   console.log(newTitle)

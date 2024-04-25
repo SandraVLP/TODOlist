@@ -13,16 +13,13 @@ const initialState: TodolistType[] = [
 
 export type RemoveTodolistActionType = {
   type: 'REMOVE-TODOLIST'
-  payload: {
     id: string
-  }
 }
  
 export type AddTodolistActionType = {
   type: 'ADD-TODOLIST'
-  payload: {
     title: string
-  }
+    todoID: string
 }
  
 export type ChangeTodolistTitleActionType = {
@@ -50,14 +47,13 @@ type ActionsType =
 export const todolistsReducer = (state: TodolistType[] = initialState, action: ActionsType) => {
   switch (action.type) {
     case "REMOVE-TODOLIST": {
-      return state.filter((tl) => tl.id !== action.payload.id);
+      return state.filter((tl) => tl.id !== action.id);
       // логика по удалению тудулиста
     }
     case "ADD-TODOLIST": {
-      const todolistID = v1();
       const newTodoList: TodolistType = {
-        id: todolistID,
-        title: action.payload.title,
+        id: action.todoID,
+        title: action.title,
         filter: "all",
       };
       return [...state, newTodoList];
@@ -84,11 +80,11 @@ export const todolistsReducer = (state: TodolistType[] = initialState, action: A
 };
 
 export const removeTodolistAC = (todolistId: string): RemoveTodolistActionType => {
-  return { type: 'REMOVE-TODOLIST', payload: { id: todolistId } } as const
+  return { type: 'REMOVE-TODOLIST',  id: todolistId  } as const
 }
 
 export const addTodolistAC = (title: string): AddTodolistActionType => {
-  return { type: 'ADD-TODOLIST', payload: { title } } as const
+  return { type: 'ADD-TODOLIST', title, todoID: v1() } as const
 }
 
 export const changeTodolistTitleAC = (title: string, id: string): ChangeTodolistTitleActionType => {
