@@ -6,9 +6,8 @@ import { FilterValuesType } from "../App";
 let todolistID1 = v1();
 let todolistID2 = v1();
 
-const initialState: TodolistType[] = [
-  { id: todolistID1, title: "What to learn", filter: "all" },
-  { id: todolistID2, title: "What to buy", filter: "all" },
+let initialTodolistState: TodolistType[] = [
+
 ];
 
 export type RemoveTodolistActionType = {
@@ -44,7 +43,9 @@ export type ActionsType =
   | ChangeTodolistTitleActionType
   | ChangeTodolistFilterActionType;
 
-export const todolistsReducer = (state: TodolistType[] = initialState, action: ActionsType) => {
+ 
+
+export const todolistsReducer = (state: TodolistType[] = initialTodolistState, action: ActionsType) => {
   switch (action.type) {
     case "REMOVE-TODOLIST": {
       return state.filter((tl) => tl.id !== action.id);
@@ -75,7 +76,7 @@ export const todolistsReducer = (state: TodolistType[] = initialState, action: A
       );
     }
     default:
-      throw new Error("I don't understand this type");
+      return state;
   }
 };
 
