@@ -57,7 +57,7 @@ export const todolistsReducer = (state: TodolistType[] = initialTodolistState, a
         title: action.title,
         filter: "all",
       };
-      return [...state, newTodoList];
+      return [...state, newTodoList]; 
       // логика по добавлению тудулиста
     }
     case "CHANGE-TODOLIST-TITLE": {

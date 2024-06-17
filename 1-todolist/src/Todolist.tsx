@@ -1,18 +1,15 @@
-import React from "react";
+import React, { useCallback } from "react";
 import { Button } from "@mui/material";
 import { FilterValuesType } from "./App";
 import { TaskType } from "./App";
-import { ChangeEvent } from "react";
 import AddItemForm from "./AddItemForm";
 import { EditableSpan } from "./EditableSpan";
 import IconButton from "@mui/material/IconButton";
 import DeleteIcon from "@mui/icons-material/Delete";
-import Checkbox from "@mui/material/Checkbox";
 import List from "@mui/material/List";
-import ListItem from "@mui/material/ListItem";
 import Box from "@mui/material/Box";
 import { filterButtonsContainerSx } from './Todolist.styles';
-import { getListItemSx } from "./Todolist.styles";
+import { Task } from "./Task";
 
 type PropsType = {
   todoID: string;
@@ -32,7 +29,7 @@ type PropsType = {
   updateTodolistTitle: (todoID: string, newTitle: string) => void;
 };
 
-export const Todolist = ({
+export const Todolist = React.memo (({
   title,
   tasks,
   todoID,
@@ -45,71 +42,35 @@ export const Todolist = ({
   updateTaskTitle,
   updateTodolistTitle,
 }: PropsType) => {
-  // const [taskTitle, setTaskTitle] = useState("");
-  // const [error, setError] = useState<string | null>(null);
 
-  const tasksList = tasks.map((task: TaskType) => {
-    const changeTaskStatusHandler = (e: ChangeEvent<HTMLInputElement>) => {
-      const newStatusValue = e.currentTarget.checked;
-      changeTaskStatus(todoID, task.id, newStatusValue);
-    };
-    // let tasksForTodolist = tasks;
-    // if (filter === "active") {
-    //   tasksForTodolist = tasks.filter((task) => !task.isDone);
-    // }
+  let tasksForTodolist = tasks;
+  if (filter === "active") {
+    tasksForTodolist = tasks.filter((task) => !task.isDone);
+  }
 
-    // if (filter === "completed") {
-    //   tasksForTodolist = tasks.filter((task) => task.isDone);
-    // }
+  if (filter === "completed") {
+    tasksForTodolist = tasks.filter((task) => task.isDone);
+  }
 
-    // const updateTaskTitleHandler = (newTitle:string) => {
-    //   console.log(newTitle)
-    //   updateTaskTitle(todoID,task.id, newTitle )
-    // }
-
-    return (
-      <ListItem
-        disableGutters
-        disablePadding
-        key={task.id}
-        sx={getListItemSx(task.isDone)}
-      >
-        <div>
-        <Checkbox checked={task.isDone} onChange={changeTaskStatusHandler} />
-        <EditableSpan
-          oldTitle={task.title}
-          updateTitle={(newTitle: string) => {
-            updateTaskTitleHandler(task.id, newTitle);
-          }}
-        />
-        </div>
-
-        <IconButton onClick={() => removeTask(todoID, task.id)}>
-          <DeleteIcon />
-        </IconButton>
-      </ListItem>
-    );
-  });
+  const tasksList = tasksForTodolist.map((t) => <Task key={t.id} task={t} todoID={todoID}
+  removeTask={removeTask}
+  updateTaskTitle={updateTaskTitle}
+  changeTaskStatus={changeTaskStatus} /> );
 
   const removeListHandler = () => {
     removeTodoList(todoID);
   };
 
-  const changeFilterTasksHandler = (filter: FilterValuesType) => {
+  const changeFilterTasksHandler = useCallback ((filter: FilterValuesType) => {
     changeFilter(todoID, filter);
-  };
+  }, [todoID, changeFilter]);
 
-  const addTaskHandler = (title: string) => {
-    addTask(todoID, title);
-  };
-  const updateTodolistTitleHandler = (newTitle: string) => {
+  const addTaskHandler = useCallback ((title: string) => {
+    addTask(todoID, title)}, [addTask, todoID]) 
+  
+  const updateTodolistTitleHandler = useCallback ((newTitle: string) => {
     updateTodolistTitle(todoID, newTitle);
-  };
-
-  const updateTaskTitleHandler = (taskId: string, newTitle: string) => {
-    console.log(newTitle);
-    updateTaskTitle(todoID, taskId, newTitle);
-  };
+  }, [todoID, updateTodolistTitle]);
 
   return (
     <div>
@@ -123,15 +84,6 @@ export const Todolist = ({
         </IconButton>
       </h3>
       <AddItemForm addItem={addTaskHandler} />
-      {/* <div>
-        <input
-        className={error ? 'error' : ''}
-          value={taskTitle}
-          onChange={changeTaskTitleHandler}
-          onKeyUp={addTaskOnKeyUpHandler}
-        />
-        {error && <div className={'error-message'}>{error}</div>}
-      </div> */}
       {tasks.length === 0 ? <p>No tasks</p> : <List>{tasksList}</List>}
       <Box sx={filterButtonsContainerSx}>
         <Button
@@ -163,4 +115,4 @@ export const Todolist = ({
       </Box>
     </div>
   );
-};
+});

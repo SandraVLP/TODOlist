@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useCallback } from "react";
 import { useState } from "react";
 import "./App.css";
 import AddItemForm from "./AddItemForm";
@@ -29,7 +29,7 @@ import {
 } from "./model/tasks-reducer";
 import { useDispatch, useSelector } from "react-redux";
 import { AppRootStateType } from "./model/store";
-import { TodolistWithRedux } from "./TodolistRedux";
+import { Todolist } from "./Todolist";
 
 type ThemeMode = "dark" | "light";
 
@@ -62,59 +62,64 @@ function AppWithRedux() {
     },
   });
 
+  let todolists = useSelector<AppRootStateType, Array<TodolistType>>(
+    (state) => state.todolists
+  );
+  let tasks = useSelector<AppRootStateType, TasksStateType>(
+    (state) => state.tasks
+  );
 
-let todolists = useSelector<AppRootStateType,Array<TodolistType>>(state => state.todolists)
-// let tasks = useSelector<AppRootStateType,TasksStateType>(state => state.tasks)
-
-let dispatch = useDispatch()
+  let dispatch = useDispatch();
 
   const changeModeHandler = () => {
     setThemeMode(themeMode === "light" ? "dark" : "light");
   };
 
-  const changeTaskStatus = (
-    todoID: string,
-    taskId: string,
-    taskStatus: boolean
-  ) => {
-    dispatch(changeTaskStatusAC(todoID, taskId, taskStatus));
-  };
+  const changeTaskStatus = useCallback(
+    (todoID: string, taskId: string, taskStatus: boolean) => {
+      dispatch(changeTaskStatusAC(todoID, taskId, taskStatus));
+    },
+    [dispatch]
+  );
 
-  const removeTask = (todoID: string, taskId: string) => {
+  const removeTask = useCallback((todoID: string, taskId: string) => {
     // let action = removeTaskAC(todoID, taskId)
     dispatch(removeTaskAC(todoID, taskId));
-  };
+  }, [dispatch]);
 
-  const removeTodoList = (todoID: string) => {
+  const removeTodoList = useCallback((todoID: string) => {
     dispatch(removeTodolistAC(todoID));
+  }, [dispatch]);
 
-  };
-
-  const addTask = (todoID: string, title: string) => {
+  const addTask = useCallback((todoID: string, title: string) => {
     dispatch(addTaskAC(todoID, title));
-  };
+  }, [dispatch]);
 
   // const [filter, setFilter] = useState<FilterValuesType>("all");
-  const changeFilter = (todoID: string, newFilter: FilterValuesType) => {
-    dispatch(changeTodolistFilterAC(todoID, newFilter));
-  };
+  const changeFilter = useCallback(
+    (todoID: string, newFilter: FilterValuesType) => {
+      dispatch(changeTodolistFilterAC(todoID, newFilter));
+    },
+    [dispatch]
+  );
 
-  const addTodoList = (title: string) => {
+  const addTodoList = useCallback((title: string) => {
     dispatch(addTodolistAC(title));
+  }, [dispatch]);
 
-  };
+  const updateTaskTitle = useCallback(
+    (todoID: string, taskId: string, newTitle: string) => {
+      dispatch(changeTaskTitleAC(todoID, taskId, newTitle));
+    },
+    [dispatch]
+  );
 
-  const updateTaskTitle = (
-    todoID: string,
-    taskId: string,
-    newTitle: string
-  ) => {
-    dispatch(changeTaskTitleAC(todoID, taskId, newTitle));
-  };
-
-  const updateTodolistTitle = (todoID: string, newTitle: string) => {
-    dispatch(changeTodolistTitleAC(todoID, newTitle));
-  };
+  const updateTodolistTitle = useCallback(
+    (todoID: string, newTitle: string) => {
+      dispatch(changeTodolistTitleAC(todoID, newTitle));
+    },
+    [dispatch]
+  );
 
   return (
     <ThemeProvider theme={theme}>
@@ -145,9 +150,19 @@ let dispatch = useDispatch()
               return (
                 <Grid2 key={el.id}>
                   <Paper sx={{ p: "0 20px 20px 20px" }}>
-                    <TodolistWithRedux
-                    todolist={el}
-
+                    <Todolist
+                      key={el.id}
+                      todoID={el.id}
+                      title={el.title}
+                      tasks={tasks[el.id]}
+                      removeTask={removeTask}
+                      changeFilter={changeFilter}
+                      addTask={addTask}
+                      changeTaskStatus={changeTaskStatus}
+                      filter={el.filter}
+                      removeTodoList={removeTodoList}
+                      updateTaskTitle={updateTaskTitle}
+                      updateTodolistTitle={updateTodolistTitle}
                     />
                   </Paper>
                 </Grid2>
