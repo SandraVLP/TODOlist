@@ -1,4 +1,4 @@
-import React, { useCallback } from "react";
+import React, { useCallback, useEffect } from "react";
 import { Button } from "@mui/material";
 import { FilterValuesType } from "./state/todolists-reducer"; 
 import { TaskType, TaskStatuses } from "./api/todolists-api"; 
@@ -10,6 +10,8 @@ import List from "@mui/material/List";
 import Box from "@mui/material/Box";
 import { filterButtonsContainerSx } from './Todolist.styles';
 import { Task } from "./Task";
+import { useAppDispatch } from "./state/store";
+import { fetchTasksTC } from "./state/tasks-reducer";
 
 type PropsType = {
   todoID: string;
@@ -40,6 +42,11 @@ export const Todolist = React.memo (({
   updateTaskTitle,
   updateTodolistTitle,
 }: PropsType) => {
+  const dispatch = useAppDispatch()
+ 
+  useEffect(() => {
+    dispatch(fetchTasksTC(todoID))
+  }, [])
 
   let tasksForTodolist = tasks;
   if (filter === "active") {

@@ -15,23 +15,34 @@ import Switch from "@mui/material/Switch";
 import CssBaseline from "@mui/material/CssBaseline";
 import {
   addTodolistAC,
+  addTodolistTC,
   changeTodolistFilterAC,
   changeTodolistTitleAC,
+  deleteTodolistTC,
   fetchTodolistsThunk,
   removeTodolistAC,
   setTodolistsAC,
   TodolistDomainType,
   todolistsReducer,
+  updateTodolistTitleTC,
 } from "./state/todolists-reducer";
 import {
   addTaskAC,
+  addTaskTC,
   changeTaskStatusAC,
   changeTaskTitleAC,
   removeTaskAC,
+  removeTaskTC,
   tasksReducer,
+  updateTaskStatusTC,
+  updateTaskTitleTC,
 } from "./state/tasks-reducer";
 import { useDispatch, useSelector } from "react-redux";
-import { AppRootStateType, AppThunkDispatch, useAppDispatch } from "./state/store";
+import {
+  AppRootStateType,
+  AppThunkDispatch,
+  useAppDispatch,
+} from "./state/store";
 import { Todolist } from "./Todolist";
 import { TaskStatuses, TaskType, todolistAPI } from "./api/todolists-api";
 
@@ -39,14 +50,11 @@ type ThemeMode = "dark" | "light";
 
 export type FilterValuesType = "all" | "active" | "completed";
 
-
 export type TasksStateType = {
   [key: string]: Array<TaskType>;
 };
 
 function AppWithRedux() {
-
-
   const [themeMode, setThemeMode] = useState<ThemeMode>("light");
   const theme = createTheme({
     palette: {
@@ -56,7 +64,6 @@ function AppWithRedux() {
       },
     },
   });
-
 
   let tasks = useSelector<AppRootStateType, TasksStateType>(
     (state) => state.tasks
@@ -71,23 +78,35 @@ function AppWithRedux() {
     setThemeMode(themeMode === "light" ? "dark" : "light");
   };
 
-  const changeTaskStatus = useCallback(function (id: string, status: TaskStatuses, todolistId: string) {
-        const action = changeTaskStatusAC(id, status, todolistId);
-        dispatch(action);
-    }, []);
+  const changeTaskStatus = useCallback(function (
+    id: string,
+    status: TaskStatuses,
+    todolistId: string
+  ) {
+    dispatch(updateTaskStatusTC(id, todolistId, status));
+  },
+  []);
 
-  const removeTask = useCallback((todoID: string, taskId: string) => {
-    // let action = removeTaskAC(todoID, taskId)
-    dispatch(removeTaskAC(todoID, taskId));
-  }, [dispatch]);
+  const removeTask = useCallback(
+    (todoID: string, taskId: string) => {
+      dispatch(removeTaskTC(taskId, todoID));
+    },
+    [dispatch]
+  );
 
-  const removeTodoList = useCallback((todoID: string) => {
-    dispatch(removeTodolistAC(todoID));
-  }, [dispatch]);
+  const removeTodoList = useCallback(
+    (todoID: string) => {
+      dispatch(deleteTodolistTC(todoID));
+    },
+    [dispatch]
+  );
 
-  const addTask = useCallback((todoID: string, title: string) => {
-    dispatch(addTaskAC(todoID, title));
-  }, [dispatch]);
+  const addTask = useCallback(
+    (todoID: string, title: string) => {
+      dispatch(addTaskTC(todoID, title));
+    },
+    [dispatch]
+  );
 
   // const [filter, setFilter] = useState<FilterValuesType>("all");
   const changeFilter = useCallback(
@@ -97,30 +116,30 @@ function AppWithRedux() {
     [dispatch]
   );
 
-  const addTodoList = useCallback((title: string) => {
-    dispatch(addTodolistAC(title));
-  }, [dispatch]);
+  const addTodoList = useCallback(
+    (title: string) => {
+      dispatch(addTodolistTC(title));
+    },
+    [dispatch]
+  );
 
   const updateTaskTitle = useCallback(
     (todoID: string, taskId: string, newTitle: string) => {
-      dispatch(changeTaskTitleAC(todoID, taskId, newTitle));
+      dispatch(updateTaskTitleTC(taskId, todoID, newTitle));
     },
     [dispatch]
   );
 
   const updateTodolistTitle = useCallback(
     (todoID: string, newTitle: string) => {
-      dispatch(changeTodolistTitleAC(todoID, newTitle));
+      dispatch(updateTodolistTitleTC(todoID, newTitle));
     },
     [dispatch]
   );
 
   useEffect(() => {
-    todolistAPI.getTodolists().then(res => {
-  
-      dispatch(fetchTodolistsThunk)
-    })
-  }, [])
+    dispatch(fetchTodolistsThunk);
+  }, []);
 
   return (
     <ThemeProvider theme={theme}>
@@ -147,7 +166,6 @@ function AppWithRedux() {
           </Grid2>
           <Grid2 container spacing={4}>
             {todolists.map((el) => {
-
               return (
                 <Grid2 key={el.id}>
                   <Paper sx={{ p: "0 20px 20px 20px" }}>
