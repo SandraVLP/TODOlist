@@ -10,7 +10,7 @@ type Props = {
 };
 
 const AddItemForm = memo( ({ addItem }: Props) => {
-  console.log('AddItemForm')
+
   const [taskTitle, setTaskTitle] = useState("");
   const [error, setError] = useState<string | null>(null);
 

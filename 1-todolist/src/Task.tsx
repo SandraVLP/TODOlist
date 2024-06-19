@@ -2,7 +2,7 @@ import React, { ChangeEvent, useCallback } from 'react'
 import { EditableSpan } from './EditableSpan'
 import IconButton from '@mui/material/IconButton';
 import Checkbox from '@mui/material/Checkbox';
-import { TaskType } from './AppWithRedux';
+import { TaskType, TaskStatuses } from './api/todolists-api';
 import { getListItemSx } from "./Todolist.styles";
 import ListItem from "@mui/material/ListItem";
 import DeleteIcon from "@mui/icons-material/Delete";
@@ -11,11 +11,8 @@ import DeleteIcon from "@mui/icons-material/Delete";
 type TaskPropsType = {
     task: TaskType
     todoID: string
-    changeTaskStatus: (
-        todoID: string,
-        taskId: string,
-        taskStatus: boolean
-      ) => void;
+    changeTaskStatus: 
+      (id: string, status: TaskStatuses, todolistId: string) => void;
       updateTaskTitle: (todoID: string, taskId: string, newTitle: string) => void;
     removeTask: (todoID: string, taskId: string) => void;
 }
@@ -28,7 +25,7 @@ export const Task = React.memo(({task, todoID, changeTaskStatus, updateTaskTitle
 
     const changeTaskStatusHandler = (e: ChangeEvent<HTMLInputElement>) => {
         const newStatusValue = e.currentTarget.checked;
-        changeTaskStatus(todoID, task.id, newStatusValue);
+        changeTaskStatus(task.id, newStatusValue ? TaskStatuses.Completed : TaskStatuses.New, todoID);
       };
 
     return (
@@ -36,10 +33,10 @@ export const Task = React.memo(({task, todoID, changeTaskStatus, updateTaskTitle
           disableGutters
           disablePadding
           key={task.id}
-          sx={getListItemSx(task.isDone)}
+          sx={getListItemSx(task.status === TaskStatuses.Completed ? 'is-done' : '')}
         >
           <div>
-          <Checkbox checked={task.isDone} onChange={changeTaskStatusHandler} />
+          <Checkbox checked={task.status === TaskStatuses.Completed} onChange={changeTaskStatusHandler} />
           <EditableSpan
             oldTitle={task.title}
             updateTitle={(newTitle: string) => {

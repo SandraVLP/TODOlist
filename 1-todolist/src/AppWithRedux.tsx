@@ -1,5 +1,5 @@
 import React, { useCallback } from "react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import "./App.css";
 import AddItemForm from "./AddItemForm";
 import AppBar from "@mui/material/AppBar";
@@ -17,41 +17,36 @@ import {
   addTodolistAC,
   changeTodolistFilterAC,
   changeTodolistTitleAC,
+  fetchTodolistsThunk,
   removeTodolistAC,
+  setTodolistsAC,
+  TodolistDomainType,
   todolistsReducer,
-} from "./model/todolists-reducer";
+} from "./state/todolists-reducer";
 import {
   addTaskAC,
   changeTaskStatusAC,
   changeTaskTitleAC,
   removeTaskAC,
   tasksReducer,
-} from "./model/tasks-reducer";
+} from "./state/tasks-reducer";
 import { useDispatch, useSelector } from "react-redux";
-import { AppRootStateType } from "./model/store";
+import { AppRootStateType, AppThunkDispatch, useAppDispatch } from "./state/store";
 import { Todolist } from "./Todolist";
+import { TaskStatuses, TaskType, todolistAPI } from "./api/todolists-api";
 
 type ThemeMode = "dark" | "light";
 
 export type FilterValuesType = "all" | "active" | "completed";
 
-export type TaskType = {
-  id: string;
-  title: string;
-  isDone: boolean;
-};
-
-export type TodolistType = {
-  id: string;
-  title: string;
-  filter: FilterValuesType;
-};
 
 export type TasksStateType = {
   [key: string]: Array<TaskType>;
 };
 
 function AppWithRedux() {
+
+
   const [themeMode, setThemeMode] = useState<ThemeMode>("light");
   const theme = createTheme({
     palette: {
@@ -62,25 +57,24 @@ function AppWithRedux() {
     },
   });
 
-  let todolists = useSelector<AppRootStateType, Array<TodolistType>>(
-    (state) => state.todolists
-  );
+
   let tasks = useSelector<AppRootStateType, TasksStateType>(
     (state) => state.tasks
   );
+  let todolists = useSelector<AppRootStateType, Array<TodolistDomainType>>(
+    (state) => state.todolists
+  );
 
-  let dispatch = useDispatch();
+  let dispatch = useAppDispatch();
 
   const changeModeHandler = () => {
     setThemeMode(themeMode === "light" ? "dark" : "light");
   };
 
-  const changeTaskStatus = useCallback(
-    (todoID: string, taskId: string, taskStatus: boolean) => {
-      dispatch(changeTaskStatusAC(todoID, taskId, taskStatus));
-    },
-    [dispatch]
-  );
+  const changeTaskStatus = useCallback(function (id: string, status: TaskStatuses, todolistId: string) {
+        const action = changeTaskStatusAC(id, status, todolistId);
+        dispatch(action);
+    }, []);
 
   const removeTask = useCallback((todoID: string, taskId: string) => {
     // let action = removeTaskAC(todoID, taskId)
@@ -120,6 +114,13 @@ function AppWithRedux() {
     },
     [dispatch]
   );
+
+  useEffect(() => {
+    todolistAPI.getTodolists().then(res => {
+  
+      dispatch(fetchTodolistsThunk)
+    })
+  }, [])
 
   return (
     <ThemeProvider theme={theme}>

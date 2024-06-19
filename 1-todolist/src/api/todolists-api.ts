@@ -1,6 +1,6 @@
 import axios, { AxiosResponse } from "axios";
 
-type TodolistType = {
+export type TodolistType = {
   id: string;
   addedDate: string;
   order: number;
@@ -32,19 +32,18 @@ export enum TaskStatuses {
   Draft = 3,
 }
 
-type TaskType = {
-  description: string;
-  title: string;
-  completed: boolean;
-  status: TaskStatuses;
-  priority: TaskPriorities;
-  startDate: string;
-  deadline: string;
-  id: string;
-  todoListId: string;
-  order: number;
-  addedDate: string;
-};
+export type TaskType = {
+  description: string
+  title: string
+  status: TaskStatuses
+  priority: TaskPriorities
+  startDate: string
+  deadline: string
+  id: string
+  todoListId: string
+  order: number
+  addedDate: string
+}
 
 export type UpdateTaskModelType = {
   title: string;
